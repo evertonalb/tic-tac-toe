@@ -6,7 +6,6 @@ project(
 	LANGUAGES C CXX)
 
 add_executable(${PROJECT_NAME} main.cpp)
+add_subdirectory(src)
 
-find_package(SDL3 REQUIRED)
-
-target_link_libraries(${PROJECT_NAME} SDL3::SDL3)
+target_link_libraries(${PROJECT_NAME} game)
