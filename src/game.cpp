@@ -21,6 +21,15 @@ Game::~Game(){
 
 void Game::init(){
 	running = true;
+
+	background = IMG_LoadTexture(renderer, "../assets/board.png");
+	if (!background) {
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
+		throw std::runtime_error("Failed to load background texture: " + std::string(SDL_GetError()));
+	}
+	SDL_SetTextureScaleMode(background, SDL_SCALEMODE_NEAREST);
+
 }
 
 void Game::loop(){
@@ -60,10 +69,17 @@ void Game::update(){
 }
 
 void Game::draw(){
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(renderer, 238, 195, 154, 255);
 	SDL_RenderClear(renderer);
 	
-	// TODO: Drawing logic
+	// Draw board
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+	SDL_FRect target = {(float) w - h, 0, (float) h, (float) h};
+	SDL_RenderTexture(renderer, background, NULL, &target);
+
+	// Draw circles and crosses here
+	
 
 	SDL_RenderPresent(renderer);
 }

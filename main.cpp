@@ -9,7 +9,7 @@ int SDL_main(int argc, char* argv[]) {
 	try {
 		game.init();
 	} catch (const std::exception& e) {
-		SDL_Log("Error initializing game: %s", e.what());
+		SDL_Log("Error initializing game. %s", e.what());
 		return -1;
 	}
 	

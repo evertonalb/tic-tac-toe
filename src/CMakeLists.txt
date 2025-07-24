@@ -1,4 +1,5 @@
 find_package(SDL3 REQUIRED)
+find_package(SDL3_image REQUIRED)
 
 function (add_with_sdl3 lib)
 	add_library(${lib} STATIC ${lib}.cpp)
@@ -7,3 +8,4 @@ function (add_with_sdl3 lib)
 endfunction()
 
 add_with_sdl3(game)
+target_link_libraries(game PUBLIC SDL3_image::SDL3_image)

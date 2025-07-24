@@ -2,11 +2,13 @@
 #define GAME_HPP
 
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 
 class Game{
 private:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+	SDL_Texture *background;
 public:
 	bool running = false;
 	Game(int w, int h, const char* title);
