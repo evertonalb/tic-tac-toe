@@ -12,6 +12,10 @@ public:
 	Game(int w, int h, const char* title);
 	~Game();
 	void init();
+	void loop();
+	void poll_events();
+	void update();
+	void draw();
 };
 
 
