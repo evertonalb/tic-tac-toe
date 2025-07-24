@@ -32,9 +32,26 @@ void Game::loop(){
 void Game::poll_events(){
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		if (event.type == SDL_EVENT_QUIT){
+		switch (event.type){
+		case SDL_EVENT_QUIT:
 			running = false;
+			break;
+		case SDL_EVENT_KEY_DOWN:
+			on_key_press(event.key);
+			break;
+		default:
+			break;
 		}
+	}
+}
+
+void Game::on_key_press(const SDL_KeyboardEvent &key){
+	switch (key.key){
+	case SDLK_ESCAPE:
+		running = false;
+		break;
+	default:
+		break;
 	}
 }
 

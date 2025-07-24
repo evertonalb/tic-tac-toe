@@ -14,6 +14,7 @@ public:
 	void init();
 	void loop();
 	void poll_events();
+	void on_key_press(const SDL_KeyboardEvent& key);
 	void update();
 	void draw();
 };
