@@ -4,6 +4,9 @@
 #include "game.hpp"
 
 int SDL_main(int argc, char* argv[]) {
+	// Initialization
+	SDL_Init(SDL_INIT_VIDEO);
+	
 	Game game(768, 768, "Tic Tac Toe");
 
 	try {
