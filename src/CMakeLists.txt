@@ -9,3 +9,5 @@ endfunction()
 
 add_with_sdl3(game)
 target_link_libraries(game PUBLIC SDL3_image::SDL3_image)
+
+add_with_sdl3(mark)
