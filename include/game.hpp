@@ -3,12 +3,15 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include "mark.hpp"
 
 class Game{
 private:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	SDL_Texture *background;
+	Mark *circle, *cross;
+	SDL_FRect grid[3][3];
 public:
 	bool running = false;
 	Game(int w, int h, const char* title);

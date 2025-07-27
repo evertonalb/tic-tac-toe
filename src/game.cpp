@@ -23,12 +23,36 @@ void Game::init(){
 	running = true;
 
 	background = IMG_LoadTexture(renderer, "../assets/board.png");
-	if (!background) {
+	if (!background){
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 		throw std::runtime_error("Failed to load background texture: " + std::string(SDL_GetError()));
 	}
 	SDL_SetTextureScaleMode(background, SDL_SCALEMODE_NEAREST);
+	
+	circle = new Mark("../assets/circle.png", renderer, {0, 0, 35, 35}, 39);
+
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+	float scale = (float) h / background->h;
+	
+	// Setting up grid matrix
+	SDL_FRect cell;
+	
+	cell.w = scale * 35;
+	cell.h = scale * 35;
+	cell.y = scale * 8;
+	
+	int stride = scale * 39;
+	
+	for (int i = 0; i < 3; i++){
+		cell.x = scale * 8;
+		for (int j = 0; j < 3; j++){
+			grid[i][j] = cell;
+			cell.x += stride;
+		}
+		cell.y += stride;
+	}
 
 }
 
@@ -77,9 +101,11 @@ void Game::draw(){
 	SDL_GetWindowSize(window, &w, &h);
 	SDL_FRect target = {(float) w - h, 0, (float) h, (float) h};
 	SDL_RenderTexture(renderer, background, NULL, &target);
-
-	// Draw circles and crosses here
 	
+	
+	// Draw circles and crosses here
+	SDL_FRect srcrect = {0, 0, 35, 35};
+	SDL_RenderTexture(renderer, circle->sprite, &circle->srcrect, &grid[2][1]);
 
 	SDL_RenderPresent(renderer);
 }
