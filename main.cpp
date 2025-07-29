@@ -7,6 +7,11 @@ int SDL_main(int argc, char* argv[]) {
 	// Initialization
 	SDL_Init(SDL_INIT_VIDEO);
 	
+	// SDL_Rand seed
+	SDL_Time time;
+	SDL_GetCurrentTime(&time);
+	SDL_rand(time);
+	
 	Game game(768, 768, "Tic Tac Toe");
 
 	try {

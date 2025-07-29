@@ -11,6 +11,7 @@ public:
 	SDL_Texture *sprite;
 	SDL_FRect srcrect; // Current source FRect
 	Mark(const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride);
+	void randomize_sprite();
 	~Mark();
 };
 
