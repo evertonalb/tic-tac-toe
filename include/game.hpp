@@ -12,6 +12,8 @@ private:
 	SDL_Texture *background;
 	Mark *circle, *cross;
 	SDL_FRect grid[3][3];
+	float scale;
+	int currentI = 0, currentJ = 0;
 public:
 	bool running = false;
 	Game(int w, int h, const char* title);
@@ -21,6 +23,7 @@ public:
 	void poll_events();
 	void on_key_press(const SDL_KeyboardEvent& key);
 	void on_click(const SDL_MouseButtonEvent& button);
+	int get_cell_from_position(float x, float y) const;
 	void update();
 	void draw();
 };
