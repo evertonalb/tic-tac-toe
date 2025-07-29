@@ -17,6 +17,8 @@ Game::Game(int w, int h, const char* title){
 Game::~Game(){
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+	delete circle;
+	delete cross;
 }
 
 void Game::init(){
@@ -30,7 +32,8 @@ void Game::init(){
 	}
 	SDL_SetTextureScaleMode(background, SDL_SCALEMODE_NEAREST);
 	
-	circle = new Mark("../assets/circle.png", renderer, {0, 0, 35, 35}, 39);
+	circle = new Mark("../assets/circle.png", renderer, {0, 0, 35, 35}, 35);
+	cross = new Mark("../assets/cross.png", renderer, {0, 0, 35, 35}, 35);
 
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
@@ -104,8 +107,8 @@ void Game::draw(){
 	
 	
 	// Draw circles and crosses here
-	SDL_FRect srcrect = {0, 0, 35, 35};
 	SDL_RenderTexture(renderer, circle->sprite, &circle->srcrect, &grid[2][1]);
+	SDL_RenderTexture(renderer, cross->sprite, &cross->srcrect, &grid[0][2]);
 
 	SDL_RenderPresent(renderer);
 }
