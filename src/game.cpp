@@ -75,6 +75,9 @@ void Game::poll_events(){
 		case SDL_EVENT_KEY_DOWN:
 			on_key_press(event.key);
 			break;
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+			on_click(event.button);
+			break;
 		default:
 			break;
 		}
@@ -86,6 +89,17 @@ void Game::on_key_press(const SDL_KeyboardEvent &key){
 	case SDLK_ESCAPE:
 		running = false;
 		break;
+	default:
+		break;
+	}
+}
+
+void Game::on_click(const SDL_MouseButtonEvent &button){
+	switch (button.button){
+	case SDL_BUTTON_LEFT:
+		SDL_Log("Left mouse button clicked at (%g, %g)", button.x, button.y);
+		break;
+	
 	default:
 		break;
 	}

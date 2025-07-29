@@ -20,6 +20,7 @@ public:
 	void loop();
 	void poll_events();
 	void on_key_press(const SDL_KeyboardEvent& key);
+	void on_click(const SDL_MouseButtonEvent& button);
 	void update();
 	void draw();
 };
