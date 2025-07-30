@@ -4,11 +4,10 @@
 #include <stdexcept>
 
 Mark::Mark(const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride) : start(start), stride(stride) {
-	sprite = IMG_LoadTexture(renderer, file);
+	sprite = IMG_Load(file);
 	if (!sprite){
-		throw std::runtime_error("Failed to create texture: " + std::string(SDL_GetError()));
+		throw std::runtime_error("Failed to create surface: " + std::string(SDL_GetError()));
 	}
-	SDL_SetTextureScaleMode(sprite, SDL_SCALEMODE_NEAREST);
 
 	randomize_sprite();
 }
@@ -21,6 +20,17 @@ void Mark::randomize_sprite(){
 	srcrect.x += step;
 }
 
+void Mark::render_mark(SDL_Renderer *renderer, SDL_FRect &target){
+	if (!texture){
+		texture = SDL_CreateTextureFromSurface(renderer, sprite);		
+		SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
+		float w, h;
+		SDL_GetTextureSize(texture, &w, &h);
+	}
+	SDL_RenderTexture(renderer, texture, &srcrect, &target);
+}
+
 Mark::~Mark(){
-	SDL_DestroyTexture(sprite);
+	SDL_DestroySurface(sprite);
+	SDL_DestroyTexture(texture);
 }

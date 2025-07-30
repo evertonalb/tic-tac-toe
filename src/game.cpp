@@ -145,8 +145,8 @@ void Game::draw(){
 	
 	
 	// Draw circles and crosses here
-	SDL_RenderTexture(renderer, circle->sprite, &circle->srcrect, &grid[currentI][currentJ]);
-	SDL_RenderTexture(renderer, cross->sprite, &cross->srcrect, &grid[0][2]);
+	circle->render_mark(renderer, grid[0][0]);
+	cross->render_mark(renderer, grid[0][2]);
 
 	SDL_RenderPresent(renderer);
 }
