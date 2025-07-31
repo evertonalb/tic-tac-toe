@@ -34,6 +34,8 @@ void Game::init(){
 	
 	circle = new Mark("../assets/circle.png", renderer, {0, 0, 35, 35}, 35);
 	cross = new Mark("../assets/cross.png", renderer, {0, 0, 35, 35}, 35);
+	
+	currentMark = (SDL_rand(2) == 0) ? circle : cross;
 
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
@@ -106,7 +108,9 @@ void Game::on_click(const SDL_MouseButtonEvent &button){
 	int cell = -1;
 	switch (button.button){
 	case SDL_BUTTON_LEFT:
-
+		marks.push_back({*currentMark, get_cell_from_position(button.x, button.y)});
+		currentMark->randomize_sprite();
+		currentMark = (currentMark == circle) ? cross : circle;
 		break;
 	
 	default:
@@ -145,8 +149,9 @@ void Game::draw(){
 	
 	
 	// Draw circles and crosses here
-	circle->render_mark(renderer, grid[0][0]);
-	cross->render_mark(renderer, grid[0][2]);
+	for (auto& mark : marks) {
+		mark.first.render_mark(renderer, grid[mark.second / 3][mark.second % 3]);
+	}
 
 	SDL_RenderPresent(renderer);
 }

@@ -3,6 +3,17 @@
 #include <SDL3_image/SDL_image.h>
 #include <stdexcept>
 
+Mark::Mark(const Mark &other) :
+	start(other.start), 
+	stride(other.stride),
+	srcrect(other.srcrect)
+{
+	sprite = SDL_DuplicateSurface(other.sprite);
+	if (!sprite){
+		throw std::runtime_error("Failed to duplicate surface: " + std::string(SDL_GetError()));
+	}
+}
+
 Mark::Mark(const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride) : start(start), stride(stride) {
 	sprite = IMG_Load(file);
 	if (!sprite){
@@ -10,6 +21,20 @@ Mark::Mark(const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride
 	}
 
 	randomize_sprite();
+}
+
+Mark &Mark::operator=(const Mark &other){
+	if (this != &other) {
+		start = other.start;
+		stride = other.stride;
+		srcrect = other.srcrect;
+
+		sprite = SDL_DuplicateSurface(other.sprite);
+		if (!sprite) {
+			throw std::runtime_error("Failed to duplicate surface: " + std::string(SDL_GetError()));
+		}
+	}
+	return *this;
 }
 
 void Mark::randomize_sprite(){
@@ -24,9 +49,8 @@ void Mark::render_mark(SDL_Renderer *renderer, SDL_FRect &target){
 	if (!texture){
 		texture = SDL_CreateTextureFromSurface(renderer, sprite);		
 		SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
-		float w, h;
-		SDL_GetTextureSize(texture, &w, &h);
 	}
+
 	SDL_RenderTexture(renderer, texture, &srcrect, &target);
 }
 

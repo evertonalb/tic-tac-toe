@@ -11,7 +11,9 @@ public:
 	SDL_Surface *sprite = NULL;
 	SDL_Texture *texture = NULL; // Texture for rendering
 	SDL_FRect srcrect; // Current source FRect
+	Mark(const Mark&  other);
 	Mark(const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride);
+	Mark& operator=(const Mark&);
 	void randomize_sprite();
 	void render_mark(SDL_Renderer *renderer, SDL_FRect &target);
 	~Mark();

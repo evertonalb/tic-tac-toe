@@ -4,16 +4,19 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include "mark.hpp"
+#include <vector>
 
 class Game{
 private:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	SDL_Texture *background;
-	Mark *circle, *cross;
+	Mark *circle, *cross, *currentMark;
 	SDL_FRect grid[3][3];
+	bool occupied[3][3] = {{false, false, false}, {false, false, false}, {false, false, false}};
 	float scale;
 	int currentI = 0, currentJ = 0;
+	std::vector< std::pair<Mark, int> > marks;
 public:
 	bool running = false;
 	Game(int w, int h, const char* title);
