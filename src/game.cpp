@@ -108,9 +108,18 @@ void Game::on_click(const SDL_MouseButtonEvent &button){
 	int cell = -1;
 	switch (button.button){
 	case SDL_BUTTON_LEFT:
-		marks.push_back({*currentMark, get_cell_from_position(button.x, button.y)});
-		currentMark->randomize_sprite();
-		currentMark = (currentMark == circle) ? cross : circle;
+		cell = get_cell_from_position(button.x, button.y);
+
+		if (cell != -1){
+			int i = cell / 3;
+			int j = cell % 3;
+			if (occupied[i][j]) break; // Cell already occupied
+			
+			marks.push_back({*currentMark, cell});
+			occupied[i][j] = true;
+			currentMark->randomize_sprite();
+			currentMark = (currentMark == circle) ? cross : circle;
+		}
 		break;
 	
 	default:
