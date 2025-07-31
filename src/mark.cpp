@@ -38,7 +38,11 @@ Mark &Mark::operator=(const Mark &other){
 }
 
 void Mark::randomize_sprite(){
-	int n = SDL_rand(4);
+	int current = srcrect.x  / 35;
+	int n = current;
+	
+	while (n == current) n = SDL_rand(4);
+	
 	int step = stride * n;
 
 	srcrect = start;
