@@ -26,6 +26,7 @@ public:
 	void poll_events();
 	void on_key_press(const SDL_KeyboardEvent& key);
 	void on_click(const SDL_MouseButtonEvent& button);
+	MarkType check_winner();
 	int get_cell_from_position(float x, float y) const;
 	void update();
 	void draw();

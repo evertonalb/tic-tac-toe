@@ -3,7 +3,15 @@
 #include <SDL3_image/SDL_image.h>
 #include <stdexcept>
 
+Mark::Mark() :
+	start({0, 0, 0, 0}),
+	stride(0),
+	srcrect({0, 0, 0, 0}),
+	type(NONE)
+{}
+
 Mark::Mark(const Mark &other) :
+	type(other.type),
 	start(other.start), 
 	stride(other.stride),
 	srcrect(other.srcrect)
@@ -14,7 +22,11 @@ Mark::Mark(const Mark &other) :
 	}
 }
 
-Mark::Mark(const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride) : start(start), stride(stride) {
+Mark::Mark(MarkType type, const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride) :
+	type(type),
+	start(start),
+	stride(stride)
+{
 	sprite = IMG_Load(file);
 	if (!sprite){
 		throw std::runtime_error("Failed to create surface: " + std::string(SDL_GetError()));
@@ -25,6 +37,7 @@ Mark::Mark(const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride
 
 Mark &Mark::operator=(const Mark &other){
 	if (this != &other) {
+		type = other.type;
 		start = other.start;
 		stride = other.stride;
 		srcrect = other.srcrect;

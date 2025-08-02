@@ -12,6 +12,8 @@ Game::Game(int w, int h, const char* title){
 		SDL_DestroyWindow(window);
 		throw std::runtime_error("Failed to create renderer: " + std::string(SDL_GetError()));
 	}
+	
+	marks.resize(9); // Preallocate space for 9 marks
 }
 
 Game::~Game(){
@@ -32,9 +34,14 @@ void Game::init(){
 	}
 	SDL_SetTextureScaleMode(background, SDL_SCALEMODE_NEAREST);
 	
-	circle = new Mark("../assets/circle.png", renderer, {0, 0, 35, 35}, 35);
-	cross = new Mark("../assets/cross.png", renderer, {0, 0, 35, 35}, 35);
-	
+	circle = new Mark(CIRCLE, "../assets/circle.png", renderer, {0, 0, 35, 35}, 35);
+	cross = new Mark(CROSS, "../assets/cross.png", renderer, {0, 0, 35, 35}, 35);
+	if (!circle || !cross) {
+		SDL_DestroyTexture(background);
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
+		throw std::runtime_error("Failed to create marks: " + std::string(SDL_GetError()));
+	}
 	currentMark = (SDL_rand(2) == 0) ? circle : cross;
 
 	int w, h;
@@ -115,16 +122,64 @@ void Game::on_click(const SDL_MouseButtonEvent &button){
 			int j = cell % 3;
 			if (occupied[i][j]) break; // Cell already occupied
 			
-			marks.push_back({*currentMark, cell});
+			marks[cell] = {*currentMark, cell};
 			occupied[i][j] = true;
 			currentMark->randomize_sprite();
 			currentMark = (currentMark == circle) ? cross : circle;
+
+			MarkType winner = check_winner();
+			if (winner != NONE) {
+				SDL_Log("Winner: %s", (winner == CIRCLE) ? "Circle" : "Cross");
+				running = false; // End game on win
+			} else {
+				SDL_Log("No winner yet.");
+			}
 		}
 		break;
 	
 	default:
 		break;
 	}
+}
+
+MarkType Game::check_winner(){
+	// Rows
+	for (int i = 0; i < 3; i++) {
+		if (occupied[i][0] && occupied[i][1] && occupied[i][2]) {
+			if (marks[i * 3].first.type == marks[i * 3 + 1].first.type && 
+				marks[i * 3].first.type == marks[i * 3 + 2].first.type) {
+				return marks[i * 3].first.type;
+			}
+		}
+	}
+	
+	// Columns
+	for (int j = 0; j < 3; j++) {
+		if (occupied[0][j] && occupied[1][j] && occupied[2][j]) {
+			if (marks[j].first.type == marks[j + 3].first.type && 
+				marks[j].first.type == marks[j + 6].first.type) {
+				return marks[j].first.type;
+			}
+		}
+	}
+
+	// Main diagonal
+	if (occupied[0][0] && occupied[1][1] && occupied[2][2]) {
+		if (marks[0].first.type == marks[4].first.type && 
+			marks[0].first.type == marks[8].first.type) {
+			return marks[0].first.type;
+		}
+	}
+	
+	// Antidiagonal
+	if (occupied[0][2] && occupied[1][1] && occupied[2][0]) {
+		if (marks[2].first.type == marks[4].first.type && 
+			marks[2].first.type == marks[6].first.type) {
+			return marks[2].first.type;
+		}
+	}
+	
+	return NONE;
 }
 
 int Game::get_cell_from_position(float x, float y) const {
