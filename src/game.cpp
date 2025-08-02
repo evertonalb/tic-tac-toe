@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include <stdexcept>
+#include <SDL3_ttf/SDL_ttf.h>
 
 Game::Game(int w, int h, const char* title){
 	window = SDL_CreateWindow(title, w, h, SDL_WINDOW_MAXIMIZED);
