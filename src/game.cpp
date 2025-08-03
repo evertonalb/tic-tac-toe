@@ -16,7 +16,7 @@ Game::Game(int w, int h, const char* title){
 	
 	marks.resize(9); // Preallocate space for 9 marks
 	
-	text = new Text("../assets/ByteBounce.ttf", 24, renderer);
+	text = new Text("../assets/ByteBounce.ttf", 40, renderer);
 }
 
 Game::~Game(){
@@ -227,19 +227,7 @@ void Game::draw(){
 	}
 	
 	if (playerWon){
-		int width = w/2 + 2*scale, height = h/3.2 + 2*scale;
-		target = {(float) w / 2 - width / 2, (float) h / 2 - height / 2, (float) width, (float) height};
-
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);		
-		SDL_RenderFillRect(renderer, &target);
-		
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
-		width = w/2;
-		height = h/3.2;
-		target = {(float) w / 2 - width / 2, (float) h / 2 - height / 2, (float) width, (float) height};
-		SDL_RenderFillRect(renderer, &target);
-		
-		text->render("Player won!", (int)(w / 2 - width / 4), (int)(h / 2 - height / 4));
+		text->render((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!", 5, 10);
 	}
 
 	SDL_RenderPresent(renderer);

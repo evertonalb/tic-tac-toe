@@ -1,8 +1,20 @@
 #include "text.hpp"
 #include <stdexcept>
 
-Text::Text(const std::string &fontPath, int fontSize, SDL_Renderer *renderer, SDL_Color color) :
-	Text(fontPath, fontSize, renderer)
+void Text::create_text_box(int w, int h, int borderWidth){
+	textBox = SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32);
+
+	SDL_Window *win = SDL_GetRenderWindow(renderer);
+	int winWidth, winHeight;
+	SDL_GetWindowSize(win, &winWidth, &winHeight);
+	
+	SDL_Rect target = {borderWidth, borderWidth, w - 2 * borderWidth, h - 2 * borderWidth};
+
+	SDL_ClearSurface(textBox, 255, 255, 255, 255); // Clear with white color
+	SDL_FillSurfaceRect(textBox, &target, SDL_MapSurfaceRGBA(textBox, 0, 0, 0, 255)); // Fill with black color
+}
+
+Text::Text(const std::string &fontPath, int fontSize, SDL_Renderer *renderer, SDL_Color color) : Text(fontPath, fontSize, renderer)
 {
 	set_color(color.r, color.g, color.b, color.a);
 }
@@ -13,29 +25,42 @@ Text::Text(const std::string &fontPath, int fontSize, SDL_Renderer *renderer) : 
 	if (!font) {
 		throw std::runtime_error("Failed to load font: " + std::string(SDL_GetError()));
 	}
+	
+	engine = TTF_CreateSurfaceTextEngine();
+	
+	create_text_box(450, 200, 5);
 }
 
 Text::~Text(){
 	TTF_CloseFont(font);
+	TTF_DestroySurfaceTextEngine(engine);
 }
 
-void Text::render(const std::string &message, int x, int y){
-	SDL_Surface* surface = TTF_RenderText_Blended(font, message.c_str(), message.size(), color);
-	if (!surface) {
-		throw std::runtime_error("Failed to create text surface: " + std::string(SDL_GetError()));
+void Text::render(const std::string &message, int borderWidth, int padding){
+	TTF_Text *text = TTF_CreateText(engine, font, message.c_str(), message.size());
+	if (!text) {
+		throw std::runtime_error("Failed to create text: " + std::string(SDL_GetError()));
 	}
+	TTF_SetTextColor(text, color.r, color.g, color.b, color.a);
+	
+	TTF_SetTextWrapWidth(text, textBox->w - 2 * (borderWidth + padding));
+	TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
+	TTF_DrawSurfaceText(text, borderWidth + padding, borderWidth, textBox);
 
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-	if (!texture) {
-		SDL_DestroySurface(surface);
-		throw std::runtime_error("Failed to create texture from surface: " + std::string(SDL_GetError()));
-	}
-
-	SDL_FRect target = {(float)x, (float)y, (float)surface->w, (float)surface->h};
-	SDL_RenderTexture(renderer, texture, NULL, &target);
-
-	SDL_DestroySurface(surface);
-	SDL_DestroyTexture(texture);
+	SDL_Texture *txt = SDL_CreateTextureFromSurface(renderer, textBox);
+	
+	int width, height;
+	SDL_GetWindowSize(SDL_GetRenderWindow(renderer), &width, &height);
+	SDL_FRect target = {
+		(float) width / 2 - textBox->w / 2, 
+		(float) height / 2 - textBox->h / 2, 
+		(float) textBox->w, 
+		(float) textBox->h
+	};
+	
+	SDL_RenderTexture(renderer, txt, NULL, &target);
+	
+	SDL_DestroyTexture(txt);
 }
 
 void Text::set_color(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
