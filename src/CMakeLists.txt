@@ -10,6 +10,8 @@ endfunction()
 
 add_with_sdl3(game)
 target_link_libraries(game PUBLIC SDL3_image::SDL3_image)
-target_link_libraries(game PUBLIC SDL3_ttf::SDL3_ttf)
 
 add_with_sdl3(mark)
+
+add_with_sdl3(text)
+target_link_libraries(text PUBLIC SDL3_ttf::SDL3_ttf)

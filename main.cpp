@@ -6,6 +6,7 @@
 int SDL_main(int argc, char* argv[]) {
 	// Initialization
 	SDL_Init(SDL_INIT_VIDEO);
+	TTF_Init();
 	
 	// SDL_Rand seed
 	SDL_Time time;

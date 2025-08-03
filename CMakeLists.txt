@@ -8,4 +8,4 @@ project(
 add_executable(${PROJECT_NAME} main.cpp)
 add_subdirectory(src)
 
-target_link_libraries(${PROJECT_NAME} game mark)
+target_link_libraries(${PROJECT_NAME} game mark text)
