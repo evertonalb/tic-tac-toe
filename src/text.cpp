@@ -34,6 +34,7 @@ Text::Text(const std::string &fontPath, int fontSize, SDL_Renderer *renderer) : 
 Text::~Text(){
 	TTF_CloseFont(font);
 	TTF_DestroySurfaceTextEngine(engine);
+	SDL_DestroySurface(textBox);
 }
 
 void Text::render(const std::string &message, int borderWidth, int padding){
