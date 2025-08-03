@@ -227,8 +227,11 @@ void Game::draw(){
 	}
 	
 	if (playerWon){
-		text->render((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!", 5, 10);
+		text->render((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!", 5, 15);
+		running = false;
 	}
 
 	SDL_RenderPresent(renderer);
+	
+	if (playerWon) SDL_Delay(1000); // Wait for 20 seconds before closing the game
 }
