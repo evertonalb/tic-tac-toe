@@ -16,7 +16,7 @@ Game::Game(int w, int h, const char* title){
 	
 	marks.resize(9); // Preallocate space for 9 marks
 	
-	text = new Text("../assets/ByteBounce.ttf", 40, renderer);
+	text = new Text("../assets/ByteBounce.ttf", 70, renderer);
 }
 
 Game::~Game(){

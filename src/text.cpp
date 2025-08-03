@@ -37,16 +37,21 @@ Text::~Text(){
 }
 
 void Text::render(const std::string &message, int borderWidth, int padding){
+	// Create text object
 	TTF_Text *text = TTF_CreateText(engine, font, message.c_str(), message.size());
 	if (!text) {
 		throw std::runtime_error("Failed to create text: " + std::string(SDL_GetError()));
 	}
 	TTF_SetTextColor(text, color.r, color.g, color.b, color.a);
 	
-	TTF_SetTextWrapWidth(text, textBox->w - 2 * (borderWidth + padding));
-	TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER);
-	TTF_DrawSurfaceText(text, borderWidth + padding, borderWidth, textBox);
+	TTF_SetTextWrapWidth(text, textBox->w - 2 * (borderWidth + padding)); // Set wrap width to fit inside the text box
+	TTF_SetFontWrapAlignment(font, TTF_HORIZONTAL_ALIGN_CENTER); // Center text horizontally
+	
+	int textWidth, textHeight;
+	TTF_GetTextSize(text, &textWidth, &textHeight);
+	TTF_DrawSurfaceText(text, borderWidth + padding, textBox->h / 2 - textHeight / 2, textBox); // Center text vertically
 
+	// Render texture centered in the window
 	SDL_Texture *txt = SDL_CreateTextureFromSurface(renderer, textBox);
 	
 	int width, height;
