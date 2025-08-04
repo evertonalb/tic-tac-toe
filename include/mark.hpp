@@ -24,6 +24,7 @@ public:
 	Mark& operator=(const Mark&);
 	void randomize_sprite();
 	void render_mark(SDL_Renderer *renderer, SDL_FRect &target);
+	void set_transparency(Uint8 alpha);
 	~Mark();
 };
 

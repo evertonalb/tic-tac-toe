@@ -71,6 +71,10 @@ void Mark::render_mark(SDL_Renderer *renderer, SDL_FRect &target){
 	SDL_RenderTexture(renderer, texture, &srcrect, &target);
 }
 
+void Mark::set_transparency(Uint8 alpha){
+	SDL_SetSurfaceAlphaMod(sprite, alpha);
+}
+
 Mark::~Mark(){
 	SDL_DestroySurface(sprite);
 	SDL_DestroyTexture(texture);

@@ -94,10 +94,10 @@ void Game::poll_events(){
 			break;
 		case SDL_EVENT_MOUSE_MOTION:
 			{
-			int cell = get_cell_from_position(event.motion.x, event.motion.y);
-			if (cell == -1) break;
-			currentI = cell / 3;
-			currentJ = cell % 3;
+				int cell = get_cell_from_position(event.motion.x, event.motion.y);
+				if (cell == -1) break;
+				currentI = cell / 3;
+				currentJ = cell % 3;
 			}
 			break;
 		case EVENT_WIN:
@@ -221,7 +221,13 @@ void Game::draw(){
 	SDL_FRect target = {(float) w - h, 0, (float) h, (float) h};
 	SDL_RenderTexture(renderer, background, NULL, &target);
 	
-	// Draw circles and crosses here
+	// Draw marks
+	if (!occupied[currentI][currentJ]) {
+		currentMark->set_transparency(128);
+		currentMark->render_mark(renderer, grid[currentI][currentJ]);
+		currentMark->set_transparency(255);
+	} 
+	
 	for (auto& mark : marks) {
 		mark.first.render_mark(renderer, grid[mark.second / 3][mark.second % 3]);
 	}
