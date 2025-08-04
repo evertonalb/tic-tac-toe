@@ -2,7 +2,24 @@
 #include <stdexcept>
 #include <SDL3_ttf/SDL_ttf.h>
 
-Game::Game(int w, int h, const char* title){
+void Game::reset_game(){
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			occupied[i][j] = false;
+			marks[i * 3 + j] = {Mark(), -1};
+		}
+	}
+	currentI = currentJ = 0;
+	currentMark = (SDL_rand(2) == 0) ? circle : cross;
+	playerWon = false;
+	askReplay = false;
+	
+	delete text;
+	text = new Text("../assets/ByteBounce.ttf", 70, renderer);
+}
+
+Game::Game(int w, int h, const char *title)
+{
 	window = SDL_CreateWindow(title, w, h, SDL_WINDOW_MAXIMIZED);
 	if (!window) {
 		throw std::runtime_error("Failed to create window: " + std::string(SDL_GetError()));
@@ -102,7 +119,10 @@ void Game::poll_events(){
 			break;
 		case EVENT_WIN:
 			playerWon = true;
-			SDL_Log("Player won!");
+			break;
+		case EVENT_ASK_REPLAY:
+			askReplay = true;
+			playerWon = false;
 			break;
 		default:
 			break;
@@ -112,6 +132,10 @@ void Game::poll_events(){
 
 void Game::on_key_press(const SDL_KeyboardEvent &key){
 	switch (key.key){
+	case SDLK_R:
+		if (!askReplay) break; // Only reset if replay is asked
+		reset_game();
+		break;
 	case SDLK_ESCAPE:
 		running = false;
 		break;
@@ -141,8 +165,6 @@ void Game::on_click(const SDL_MouseButtonEvent &button){
 				SDL_Event winEvent;
 				winEvent.type = EVENT_WIN;
 				SDL_PushEvent(&winEvent);
-			} else {
-				SDL_Log("No winner yet.");
 			}
 		}
 		break;
@@ -220,9 +242,10 @@ void Game::update(){
 		gameOverTimer -= delta;
 		
 		if (gameOverTimer <= 0){ // When the timer is up
-			SDL_Event quitEvent;
-			quitEvent.type = SDL_EVENT_QUIT;
-			SDL_PushEvent(&quitEvent);
+			SDL_Event ask;
+			ask.type = EVENT_ASK_REPLAY;
+			SDL_PushEvent(&ask);
+			gameOverTimer = 1500; // Reset timer
 			return;
 		}
 	}
@@ -253,6 +276,7 @@ void Game::draw(){
 	}
 	
 	if (playerWon) text->render((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!", 5, 15);
+	if (askReplay) text->render("Press R to replay\nor ESC to quit", 5, 15);
 	
 	SDL_RenderPresent(renderer);
 }

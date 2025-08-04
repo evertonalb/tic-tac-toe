@@ -9,6 +9,7 @@
 
 // Custom events
 #define EVENT_WIN SDL_EVENT_USER
+#define EVENT_ASK_REPLAY SDL_EVENT_USER + 1
 
 class Game {
 private:
@@ -22,7 +23,10 @@ private:
 	Mark *circle, *cross, *currentMark;
 	std::vector< std::pair<Mark, int> > marks;
 	bool playerWon = false;
-	Text *text;
+	bool askReplay = false;
+	Text *text = NULL;
+
+	void reset_game();
 public:
 	bool running = false;
 	Game(int w, int h, const char* title);

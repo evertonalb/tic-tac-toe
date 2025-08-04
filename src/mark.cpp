@@ -16,10 +16,17 @@ Mark::Mark(const Mark &other) :
 	stride(other.stride),
 	srcrect(other.srcrect)
 {
-	sprite = SDL_DuplicateSurface(other.sprite);
-	if (!sprite){
-		throw std::runtime_error("Failed to duplicate surface: " + std::string(SDL_GetError()));
+	if (other.type == NONE) {
+		sprite = NULL;
+		texture = NULL;
+		return;
+	} else {
+		sprite = SDL_DuplicateSurface(other.sprite);
+		if (!sprite){
+			throw std::runtime_error("Failed to duplicate surface: " + std::string(SDL_GetError()));
+		}
 	}
+	
 }
 
 Mark::Mark(MarkType type, const char *file, SDL_Renderer *renderer, SDL_FRect start, int stride) :
@@ -42,6 +49,14 @@ Mark &Mark::operator=(const Mark &other){
 		stride = other.stride;
 		srcrect = other.srcrect;
 
+		if (other.type == NONE){
+			if (sprite) SDL_DestroySurface(sprite);
+			sprite = NULL;
+			if (texture) SDL_DestroyTexture(texture);
+			texture = NULL;
+			return *this;
+		}
+		
 		sprite = SDL_DuplicateSurface(other.sprite);
 		if (!sprite) {
 			throw std::runtime_error("Failed to duplicate surface: " + std::string(SDL_GetError()));

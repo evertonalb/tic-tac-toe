@@ -56,18 +56,19 @@ void Text::render(const std::string &message, int borderWidth, int padding){
 	int textWidth, textHeight;
 	TTF_GetTextSize(text, &textWidth, &textHeight);
 
-	// Check if textBox is created. If not, create it:
-	while (!textBox){
-		SDL_DestroySurface(textBox);
-		textBox = nullptr;
-		create_text_box( // The text box will be just large enough to fit the text
-			textWidth + 2 * (padding + borderWidth),
-			textHeight + 2 * (padding + borderWidth),
-			borderWidth
-		);
-	}	
+	SDL_DestroySurface(textBox);
+	create_text_box( // The text box will be just large enough to fit the text
+		textWidth + 2 * (padding + borderWidth),
+		textHeight + 2 * (padding + borderWidth),
+		borderWidth
+	);
+	
+	if (!textBox) {
+		TTF_DestroyText(text);
+		throw std::runtime_error("Failed to create text box surface: " + std::string(SDL_GetError()));
+	}
 
-	bool success = TTF_DrawSurfaceText(text, borderWidth + padding, textBox->h / 2 - textHeight / 2, textBox); // Center text vertically
+	TTF_DrawSurfaceText(text, borderWidth + padding, textBox->h / 2 - textHeight / 2, textBox); // Center text vertically
 																								
 	// Render texture centered in the window
 	SDL_Texture *txt = SDL_CreateTextureFromSurface(renderer, textBox);
