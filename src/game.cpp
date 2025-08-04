@@ -24,6 +24,15 @@ Game::Game(int w, int h, const char *title)
 	if (!window) {
 		throw std::runtime_error("Failed to create window: " + std::string(SDL_GetError()));
 	}
+	
+	SDL_Surface *icon = IMG_Load("../assets/icon.png");
+	if (!icon){
+		SDL_DestroyWindow(window);
+		throw std::runtime_error("Failed to load icon: " + std::string(SDL_GetError()));
+	}
+	
+	SDL_SetWindowIcon(window, icon);
+	SDL_DestroySurface(icon);
 
 	renderer = SDL_CreateRenderer(window, NULL);
 	if (!renderer) {
