@@ -9,21 +9,21 @@
 class Text {
 private:
     /// @brief The font used for rendering text.
-    TTF_Font* font;
+    TTF_Font* font = NULL;
     
     /// @brief The color of the text.
     SDL_Color color;
     
     /// @brief The SDL renderer used for rendering text.
-    SDL_Renderer* renderer;
-    
+    SDL_Renderer* renderer = NULL;
+
     /// @brief The text rendering engine.
     /// This is used to create text surfaces.
-    TTF_TextEngine *engine;
+    TTF_TextEngine *engine = NULL;
     
     /// @brief The surface that holds the rendered text.
     /// This surface is used to create a texture for rendering.
-    SDL_Surface *textBox;
+    SDL_Surface *textBox = NULL;
     
     void create_text_box(int w, int h, int borderWidth);
 public:

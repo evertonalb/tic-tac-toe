@@ -208,7 +208,26 @@ int Game::get_cell_from_position(float x, float y) const {
 }
 
 void Game::update(){
-	// TODO: Update game state
+	static SDL_Time lastTime = SDL_GetTicks();
+	SDL_Time currentTime = SDL_GetTicks();
+	SDL_Time delta = currentTime - lastTime;
+	
+	if (delta < 16) return; // Limit to ~60 FPS
+	
+	static SDL_Time gameOverTimer = 1500; // in milliseconds
+	if (playerWon){
+		// Start game over timer	
+		gameOverTimer -= delta;
+		
+		if (gameOverTimer <= 0){ // When the timer is up
+			SDL_Event quitEvent;
+			quitEvent.type = SDL_EVENT_QUIT;
+			SDL_PushEvent(&quitEvent);
+			return;
+		}
+	}
+	
+	lastTime = currentTime;
 }
 
 void Game::draw(){
@@ -229,15 +248,11 @@ void Game::draw(){
 	} 
 	
 	for (auto& mark : marks) {
+		if (mark.first.type == NONE) continue; // Skip empty marks
 		mark.first.render_mark(renderer, grid[mark.second / 3][mark.second % 3]);
 	}
 	
-	if (playerWon){
-		text->render((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!", 5, 15);
-		running = false;
-	}
-
-	SDL_RenderPresent(renderer);
+	if (playerWon) text->render((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!", 5, 15);
 	
-	if (playerWon) SDL_Delay(1000); // Wait for 20 seconds before closing the game
+	SDL_RenderPresent(renderer);
 }

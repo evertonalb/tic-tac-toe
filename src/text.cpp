@@ -8,6 +8,9 @@ void Text::create_text_box(int w, int h, int borderWidth){
 	}
 	
 	textBox = SDL_CreateSurface(w, h, SDL_PIXELFORMAT_RGBA32);
+	if (!textBox) {
+		throw std::runtime_error("Failed to create text box surface: " + std::string(SDL_GetError()));
+	}
 
 	SDL_Window *win = SDL_GetRenderWindow(renderer);
 	int winWidth, winHeight;
@@ -16,6 +19,7 @@ void Text::create_text_box(int w, int h, int borderWidth){
 	SDL_Rect target = {borderWidth, borderWidth, w - 2 * borderWidth, h - 2 * borderWidth};
 
 	SDL_ClearSurface(textBox, 255, 255, 255, 255); // Clear with white color
+	SDL_ClearError();
 	SDL_FillSurfaceRect(textBox, &target, SDL_MapSurfaceRGBA(textBox, 0, 0, 0, 255)); // Fill with black color
 }
 
@@ -53,15 +57,18 @@ void Text::render(const std::string &message, int borderWidth, int padding){
 	TTF_GetTextSize(text, &textWidth, &textHeight);
 
 	// Check if textBox is created. If not, create it:
-	if (!textBox)
+	while (!textBox){
+		SDL_DestroySurface(textBox);
+		textBox = nullptr;
 		create_text_box( // The text box will be just large enough to fit the text
 			textWidth + 2 * (padding + borderWidth),
 			textHeight + 2 * (padding + borderWidth),
 			borderWidth
 		);
-	
-	TTF_DrawSurfaceText(text, borderWidth + padding, textBox->h / 2 - textHeight / 2, textBox); // Center text vertically
+	}	
 
+	bool success = TTF_DrawSurfaceText(text, borderWidth + padding, textBox->h / 2 - textHeight / 2, textBox); // Center text vertically
+																								
 	// Render texture centered in the window
 	SDL_Texture *txt = SDL_CreateTextureFromSurface(renderer, textBox);
 	

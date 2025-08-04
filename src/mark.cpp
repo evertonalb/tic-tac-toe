@@ -64,11 +64,15 @@ void Mark::randomize_sprite(){
 
 void Mark::render_mark(SDL_Renderer *renderer, SDL_FRect &target){
 	if (!texture){
+		if (!sprite) {
+			throw std::runtime_error("Sprite is not loaded: " + std::string(SDL_GetError()));
+		}
 		texture = SDL_CreateTextureFromSurface(renderer, sprite);		
 		SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
 	}
 
 	SDL_RenderTexture(renderer, texture, &srcrect, &target);
+
 }
 
 void Mark::set_transparency(Uint8 alpha){
