@@ -148,6 +148,8 @@ void Game::on_click(const SDL_MouseButtonEvent &button){
 	int cell = -1;
 	switch (button.button){
 	case SDL_BUTTON_LEFT:
+		if (playerWon || askReplay) break; // Ignore clicks if game over or asking for replay
+		
 		cell = get_cell_from_position(button.x, button.y);
 
 		if (cell != -1){
