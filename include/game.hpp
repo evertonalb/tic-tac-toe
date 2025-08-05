@@ -22,6 +22,7 @@ private:
 	int currentI = 0, currentJ = 0;
 	Mark *circle, *cross, *currentMark;
 	std::vector< std::pair<Mark, int> > marks;
+	bool showText = false;
 	bool playerWon = false;
 	bool askReplay = false;
 	Text *text = NULL;

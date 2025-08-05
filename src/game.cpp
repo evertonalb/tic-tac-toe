@@ -11,6 +11,7 @@ void Game::reset_game(){
 	}
 	currentI = currentJ = 0;
 	currentMark = (SDL_rand(2) == 0) ? circle : cross;
+	showText = false;
 	playerWon = false;
 	askReplay = false;
 	
@@ -127,11 +128,14 @@ void Game::poll_events(){
 			}
 			break;
 		case EVENT_WIN:
+			text->set_text((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!");
 			playerWon = true;
+			showText = true;
 			break;
 		case EVENT_ASK_REPLAY:
+			text->set_text("Press R to replay\nor ESC to quit");
 			askReplay = true;
-			playerWon = false;
+			showText = true;
 			break;
 		default:
 			break;
@@ -257,6 +261,8 @@ void Game::update(){
 			ask.type = EVENT_ASK_REPLAY;
 			SDL_PushEvent(&ask);
 			gameOverTimer = 1500; // Reset timer
+			playerWon = false;
+			showText = false;
 			return;
 		}
 	}
@@ -286,8 +292,7 @@ void Game::draw(){
 		mark.first.render_mark(renderer, grid[mark.second / 3][mark.second % 3]);
 	}
 	
-	if (playerWon) text->render((currentMark->type == CIRCLE) ? "Crosses win!" : "Circles win!", 5, 15);
-	if (askReplay) text->render("Press R to replay\nor ESC to quit", 5, 15);
+	if (showText) text->render_text();
 	
 	SDL_RenderPresent(renderer);
 }
